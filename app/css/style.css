@@ -1,0 +1,43 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-size: 16px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.editor {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+
+  width: 50%;
+  height: 100%;
+  overflow: auto;
+  padding: 30px;
+
+  font-size: 16px;
+}
+
+.editor:first-child {
+  left: 0;
+}
+
+.editor:last-child {
+  right: 0;
+}
+
+.markdown-source {
+  border: 0;
+  resize: 0;
+  outline: 0;
+}
+
+/* Markdown Style */
+.markdown-result code {
+  padding: 7px;
+
+  border-radius: 5px;
+  background-color: #eee;
+}
