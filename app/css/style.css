@@ -1,43 +1,157 @@
+:root {
+  --resizerBackground: rgba(0,0,0,.1);
+  --resizerBackgroundDarker: rgba(0,0,0,.4);
+}
+
 * {
   box-sizing: border-box;
 }
 
+body, html {
+  width: 100%;
+  height: 100%;
+}
+
+body h1 p.tati {
+
+}
+
 body {
   font-size: 16px;
-  font-family: Arial, Helvetica, sans-serif;
+  line-height: 1.5;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+#app {
+  width: 100%;
+  height: 100%;
+  display: flex;
+}
+
+.is-dragging .editor {
+  pointer-events: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 .editor {
-  position: fixed;
-  top: 0;
-  bottom: 0;
-
   width: 50%;
+  min-width: 200px;
   height: 100%;
   overflow: auto;
   padding: 30px;
 
   font-size: 16px;
+  word-break: break-all;
+
+  will-change: width;
 }
 
 .editor:first-child {
   left: 0;
+  z-index: 1;
+
+  background-color: #fcfcfc;
 }
 
 .editor:last-child {
   right: 0;
+  z-index: 1;
+}
+
+.resizer {
+  position: absolute;
+  top: 0;
+  left: calc(50% - 20px);
+  bottom: 0;
+  z-index: 2;
+
+  width: 40px;
+
+  background-image: linear-gradient(to right, var(--resizerBackground) 50%, var(--resizerBackground) 50%);
+  background-repeat: no-repeat;
+  background-size: 1px 100%;
+  background-position: center 0;
+  cursor: col-resize;
+}
+
+.resizer:hover {
+  background-image: linear-gradient(to right, var(--resizerBackgroundDarker) 50%, var(--resizerBackgroundDarker) 50%);
 }
 
 .markdown-source {
+  line-height: 1.5;
+
   border: 0;
-  resize: 0;
+  resize: none;
   outline: 0;
 }
 
-/* Markdown Style */
+/*************************
+ * Markdown Styles
+ *************************/
+.markdown-result {
+  line-height: 1.5;
+}
+
+.markdown-result :first-child {
+  margin-top: 0;
+}
+
+/* Code Styles */
 .markdown-result code {
-  padding: 7px;
+  padding-top: 0.2em;
+  padding-bottom: 0.2em;
+
+  font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, Courier, monospace;
+  font-size: 85%;
 
   border-radius: 5px;
-  background-color: #eee;
+  background-color: rgba(27,31,35,0.05);
+}
+
+.markdown-result p code::after,
+.markdown-result p code::before {
+  letter-spacing: -0.2em;
+  content: "\00a0";
+}
+
+.markdown-result pre code {
+  display: block;
+  padding: 16px;
+  overflow: auto;
+
+  line-height: 1.45;
+
+  background-color: #f6f8fa;
+}
+
+/* Blockquote Styles */
+.markdown-result blockquote {
+  padding: 0 16px;
+  margin-left: 0;
+
+  border-left: 0.25em solid rgb(223, 226, 229);
+}
+
+/* HR Styles */
+.markdown-result hr {
+  height: 0.25em;
+  padding: 0;
+  margin: 24px 0;
+  background-color: #e1e4e8;
+  border: 0;
+}
+
+/* Image styles */
+.markdown-result img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Title Styles */
+.markdown-result h1 {
+  padding-bottom: 5px;
+
+  border-bottom: 1px solid #eaecef;
 }

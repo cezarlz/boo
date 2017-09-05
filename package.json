@@ -20,8 +20,10 @@
     "electron": "~1.6.2"
   },
   "dependencies": {
+    "lodash": "^4.17.4",
     "markdown": "^0.5.0",
     "mousetrap": "^1.6.1",
-    "mousetrap-global-bind": "^1.1.0"
+    "mousetrap-global-bind": "^1.1.0",
+    "showdown": "^1.7.2"
   }
 }
