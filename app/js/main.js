@@ -1,11 +1,22 @@
-'use strict';
+import { createStore,combineReducers } from 'redux';
+import showdown from 'showdown';
+import Mousetrap from 'mousetrap';
+import * as MousetrapGlobalBind from 'mousetrap-global-bind';
+import throttle from 'lodash/throttle';
 
-const showdown = require('showdown');
-const markdown = new showdown.Converter();
-const Mousetrap = require('mousetrap');
-const debounce = require('lodash/debounce');
+// Project dependencies
+import defaultConfigs from './js/configs';
 
-require('mousetrap-global-bind');
+// Reducers
+import {
+  editor
+} from './js/reducers';
+
+// Actions
+import {
+  resizeEditor,
+  updateEditorContent
+} from './js/actions';
 
 const $ = el => document.querySelector(el);
 
@@ -13,13 +24,13 @@ const app = $('#app');
 const markdownSource = $('#js-markdown-source');
 const markdownResult = $('#js-markdown-result');
 const markdownResizer = $('#js-resizer');
+const markdown = new showdown.Converter();
 
-let defaultConfigs = {
-  resize: {
-    min: 200,
-    max: 200
-  }
-};
+const store = createStore(
+  combineReducers({
+    editor
+  })
+);
 
 // Methods
 const parseMarkdown = (md, transformers = []) => {
@@ -33,16 +44,13 @@ const parseMarkdown = (md, transformers = []) => {
   return result;
 };
 
-const includeContent = content => document.execCommand('insertText', false, content);
-const includeLink = () => includeContent(`[Text here](http://)`);
-const includeImage = () => includeContent(`![Alt text here](http://)`);
-const includeTab = () => includeContent("\t");
-
 // Events
-markdownSource.addEventListener('keyup', debounce(e => {
+markdownSource.addEventListener('input', throttle(e => {
   const { value } = e.target;
 
-  markdownResult.innerHTML = parseMarkdown(value);
+  const htmlResult = parseMarkdown(value);
+
+  store.dispatch(updateEditorContent(value, htmlResult));
 }, 200));
 
 /**
@@ -51,19 +59,17 @@ markdownSource.addEventListener('keyup', debounce(e => {
  * @param {Array} shortcuts
  * @param {Function} cb
  */
-const createShortchut = (shortcuts = [], cb) => {
+const createShortchut = (shortcuts = [], content = '') => {
   Mousetrap(markdownSource).bindGlobal(shortcuts, () => {
-    cb();
-
-    markdownResult.innerHTML = parseMarkdown(markdownSource.value);
+    document.execCommand('insertText', false, content)
 
     return false;
   });
 };
 
-createShortchut(['command+shift+l', 'ctrl+shift+l'], includeLink); // Link
-createShortchut(['command+shift+i', 'ctrl+shift+i'], includeImage); // Image
-createShortchut(['tab'], includeTab); // Tab
+createShortchut(['command+shift+l', 'ctrl+shift+l'], `[Text here](http://)`); // Link
+createShortchut(['command+shift+i', 'ctrl+shift+i'], `![Alt text here](http://)`); // Image
+createShortchut(['tab'], "\t"); // Tab
 
 // Twin Scroll
 const getScrollPosition = (scroll, height, targetHeight) => scroll * targetHeight / height;
@@ -104,7 +110,7 @@ const resizeEditors = (x, total = window.innerWidth, configs = defaultConfigs) =
   markdownSource.style.width = `${x}px`; // A
   markdownResult.style.width = `${total - x}px`; // B
 
-  console.log(x, total - x, isMin, isMax, resizerWidth, resizerHalf, resizerPosition);
+  // console.log(x, total - x, isMin, isMax, resizerWidth, resizerHalf, resizerPosition);
 };
 
 markdownResizer.addEventListener('mousedown', () => {
@@ -125,13 +131,13 @@ app.addEventListener('mousemove', e => {
   resizeEditors(e.pageX);
 });
 
-
 window.addEventListener('resize', () => {
   resizeEditors(markdownSource.clientWidth);
 });
 
-const init = () => {
-  // Init functions goes here
+const render = state => {
+  // Update editor
+  markdownResult.innerHTML = state.editor.get('html');
 };
 
-init();
+store.subscribe(() => render(store.getState()));

@@ -1,0 +1,4 @@
+// Actions
+export const RESIZE_EDITOR = 'RESIZE_EDITOR';
+
+export const UPDATE_EDITOR_CONTENT = 'UPDATE_EDITOR_CONTENT';
