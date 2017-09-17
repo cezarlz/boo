@@ -1,6 +1,6 @@
 import {enableLiveReload} from 'electron-compile';
 
-enableLiveReload();
+enableLiveReload({strategy: 'react-hmr'});
 
 const electron = require('electron')
 // Module to control application life.

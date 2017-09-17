@@ -7,7 +7,7 @@
   box-sizing: border-box;
 }
 
-body, html {
+body, html, #container {
   width: 100%;
   height: 100%;
 }
@@ -25,7 +25,8 @@ body {
 #app {
   width: 100%;
   height: 100%;
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(200px, 1fr));
 }
 
 .is-dragging .editor {
@@ -35,11 +36,8 @@ body {
 }
 
 .editor {
-  width: 50%;
-  min-width: 200px;
-  height: 100%;
+  max-height: 100%;
   overflow: auto;
-  padding: 30px;
 
   font-size: 16px;
   word-break: break-all;
@@ -48,43 +46,28 @@ body {
 }
 
 .editor:first-child {
-  left: 0;
-  z-index: 1;
+  display: flex;
+}
 
-  background-color: #fcfcfc;
+.editor:first-child .markdown-source {
+  flex: 1;
+
+  box-shadow: inset rgba(0,0,0, .1) -1px 0 0;
 }
 
 .editor:last-child {
-  right: 0;
-  z-index: 1;
-}
-
-.resizer {
-  position: absolute;
-  top: 0;
-  left: calc(50% - 20px);
-  bottom: 0;
-  z-index: 2;
-
-  width: 40px;
-
-  background-image: linear-gradient(to right, var(--resizerBackground) 50%, var(--resizerBackground) 50%);
-  background-repeat: no-repeat;
-  background-size: 1px 100%;
-  background-position: center 0;
-  cursor: col-resize;
-}
-
-.resizer:hover {
-  background-image: linear-gradient(to right, var(--resizerBackgroundDarker) 50%, var(--resizerBackgroundDarker) 50%);
+  padding: 30px;
 }
 
 .markdown-source {
+  padding: 30px;
+
   line-height: 1.5;
 
   border: 0;
   resize: none;
   outline: 0;
+  background-color: #fcfcfc;
 }
 
 /*************************
@@ -155,3 +138,5 @@ body {
 
   border-bottom: 1px solid #eaecef;
 }
+
+/* Themes */
